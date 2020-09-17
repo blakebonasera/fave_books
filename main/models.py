@@ -37,9 +37,23 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
+    
+
+class BookManager(models.Manager):
+    def book_validator(self, postData):
+        errors = {}
+        if len(postData['title']) < 1:
+            errors['title'] = 'Your book does need a title.'
+        if len(postData['desc']) < 5:
+            errors['desc'] = 'You added it, you have to have something to say about it.'
+        return errors
 
 class Book(models.Model):
     title = models.CharField(max_length=120)
     desc = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    uploaded_by = models.ForeignKey(User, related_name='upload', on_delete = models.CASCADE)
+    users_who_like = models.ManyToManyField(User, related_name='liked_by')
+    objects = BookManager()
+    

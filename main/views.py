@@ -1,6 +1,6 @@
 from django.shortcuts import render , HttpResponse, redirect
 from django.contrib import messages
-from .models import User
+from .models import User, Book
 import bcrypt
 
 # Create your views here.
@@ -46,10 +46,33 @@ def success(request):
         return redirect('/')
     logged_in_user = User.objects.get(id=request.session['user_id'])
     context = {
-        'logged_in_user': logged_in_user
+        'logged_in_user': logged_in_user,
+        'all_books': Book.objects.all(),
     }
     return render(request, 'success.html', context)
 
+def newBook(request):
+    errors = Book.objects.book_validator(request.POST)
+    if len(errors)>0:
+        for key, value in errors.items():
+            messages.error(request, value)
+        return redirect('/success')
+    logged_in_user = User.objects.get(id=request.session['user_id'])
+    new_book = Book.objects.create(
+        title= request.POST['title'],
+        desc= request.POST['desc'],
+        uploaded_by= logged_in_user
+    )
+    new_book.users_who_like.add(logged_in_user)
+    print(new_book.__dict__)
+    return redirect("/success")
+
+def book(request, num):
+    context ={
+        'selected_book': Book.objects.get(id=num),
+        'all_books': Book.objects.all(),
+    }
+    return redirect(request, 'book.html', context)
 def logout(request):
     request.session.clear()
     return redirect('/')

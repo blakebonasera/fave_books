@@ -4,10 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Success</title>
+    <style>
+        #container{
+            display: flex;
+            justify-content: space-evenly;
+        }
+        h1{
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <a href="/logout">Log Out</a>
-    <h1>AYOooooo</h1>
-    <h2>Welcome, {{logged_in_user.first}}!!!!!</h2>
+    <h1>Welcome, {{logged_in_user.first}}!!!!!</h1>
+    <div id="container">
+        <div id="add_book">
+            <h2>Add a Book!</h2>
+            <form action="/addbook" method="post">
+            {% csrf_token %}
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title">
+            <br>
+            <br>
+            <label for="desc">Description:</label>
+            <input type='text' name="desc" id="desc">
+            <br>
+            <br>
+            <input type="submit" value="Add">
+            </form>
+            {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+            {{ message }}
+        </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+        </div>
+        <div id="all_books">
+            <h2>All Books</h2>
+                {% for Book in all_books%}
+                <a href="/book/{{Book.id}}">{{Book.title}}</a>
+                <p>(Added by {{Book.uploaded_by.first}} {{Book.uploaded_by.last}})</p>
+                {% endfor %}
+        </div>
+    </div>
 </body>
 </html>
