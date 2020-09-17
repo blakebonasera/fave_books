@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #container{
+            display: flex;
+            justify-content: space-evenly;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="registration">
+            <h2>registration</h2>
+            <form action="/register" method="post">
+                {% csrf_token %}
+                <label for="first">First Name:</label>
+                <input type="text" name="first" id="first">
+                <br>
+                <br>
+                <label for="last">Last Name:</label>
+                <input type="text" name="last" id="last">
+                <br>
+                <br>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email">
+                <br>
+                <br>
+                <label for="pw">Password:</label>
+                <input type="password" name="pw" id="pw">
+                <br>
+                <br>
+                <label for="cPw">Confirm Password:</label>
+                <input type="password" name="cPw" id="cPw">
+                <br>
+                <br>
+                <input type="submit" value="Register">
+            </form>
+            {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+            {{ message }}
+        </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+        </div>
+        <div id="login">
+            <h2>Login</h2>
+            <form action="/login" method="post">
+                {% csrf_token %}
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email">
+                <br>
+                <br>
+                <label for="pw">Password:</label>
+                <input type="password" name="pw" id="pw">
+                <br>
+                <br>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+    </div>
+</body>
+</html>
