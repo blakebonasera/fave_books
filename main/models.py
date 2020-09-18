@@ -1,5 +1,6 @@
 from django.db import models
 import re
+import bcrypt
 
 # Create your models here.
 
@@ -25,6 +26,11 @@ class UserManager(models.Manager):
         EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
         if len(postData['email']) < 8:
             errors['email_length'] = 'Email is not long enough'
+        user = User.objects.get(email=postData['email'])  
+        if bcrypt.checkpw(postData['pw'].encode(), user.password.encode()):
+            print("password match")
+        else:
+            errors['incorrect'] = "Email or Password is incorect"
         if not EMAIL_REGEX.match(postData['email']):                
             errors['email'] = "Invalid email address!"
         return errors
@@ -37,6 +43,8 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
+    def __repr__(self):
+        return f'{self.first} {self.last}'
     
 
 class BookManager(models.Manager):
@@ -56,4 +64,6 @@ class Book(models.Model):
     uploaded_by = models.ForeignKey(User, related_name='upload', on_delete = models.CASCADE)
     users_who_like = models.ManyToManyField(User, related_name='liked_by')
     objects = BookManager()
+    def __repr__(self):
+        return f'title:{self.title}'
     

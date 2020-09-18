@@ -6,6 +6,49 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <a href="/logout">Log Out</a>
+    <h1>Welcome, {{logged_in_user.first}}!!!!!</h1>
+    <div id="container">
+        <div id="book">
+            {% if selected_book.uploaded_by == logged_in_user %}
+            <form action="/book/{{selected_book.id}}/update" method="post">
+            {% csrf_token %}
+            <label for="title">Update Title:</label>
+            <input type="text" name="title" id="title">
+            <br>
+            <br>
+            <label for="desc">Update Description</label>
+            <input type="text" name="desc" id="desc">
+            <br>
+            <input type="submit" value="Update">
+            <a href="/book/{{selected_book.id}}/delete">Delete</a>
+            </form>
+            {% if messages %}
+            <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                {{ message }}
+            </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+            {% endif %}
+        <h2>{{selected_book.title}}</h2>
+        <p>Added by {{selected_book.uploaded_by.first}} {{Book.uploaded_by.last}}</p>
+        <p>Added on: {{selected_book.created_at}}</p>
+        <p>Last updated: {{selected_book.updated_at}}</p>
+        <p>Description: {{selected_book.desc}}</p>
+    </div>
+    <div id="liked">
+        <h2>Users who like This Book:</h2>
+        <a href="/book/{{selected_book.id}}/favorite">Favorite this Book</a>
+        <a href="/book/{{selected_book.id}}/unfavorite">Unfavorite this Book</a>
+        <ul>
+            {% for liked in selected_book.users_who_like.all %}
+            <li>{{liked.first}} {{liked.last}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    </div>
 </body>
 </html>
